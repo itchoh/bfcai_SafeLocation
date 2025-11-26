@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 void main() {
-  runApp(const MyApp());
+  runApp( MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+   MyApp({super.key});
+final Set<Marker> mark={Marker(markerId: MarkerId("1"),position: LatLng(30.4738636,31.199931))};
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,8 +14,10 @@ class MyApp extends StatelessWidget {
       home: Scaffold(appBar: AppBar(title: Text("data"),
       ),
         body: GoogleMap(
+
           mapType: MapType.normal,
-          initialCameraPosition: CameraPosition(target: LatLng(37.42796133580664, -122.085749655962)),
+          markers:mark ,
+          initialCameraPosition: CameraPosition(target: LatLng(30.4738636,31.199931),zoom: 20,),
           onMapCreated: (GoogleMapController controller) {
            // _controller.complete(controller);
           },
