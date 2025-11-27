@@ -1,14 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:background_locator_2/background_locator.dart';
-import 'package:background_locator_2/auto_stop_handler.dart';
-import 'package:background_locator_2/callback_dispatcher.dart';
-import 'package:background_locator_2/keys.dart';
-import 'package:background_locator_2/location_dto.dart';
-import 'package:background_locator_2/settings/android_settings.dart';
-import 'package:background_locator_2/settings/ios_settings.dart';
-import 'package:background_locator_2/settings/locator_settings.dart';
-import 'package:background_locator_2/utils/settings_util.dart';
 void main() {
   runApp( MyApp());
 }
