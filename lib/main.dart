@@ -24,6 +24,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _determinePosition();
   }
+
   Future<void> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -56,12 +57,9 @@ class _MyAppState extends State<MyApp> {
         position = p;
       });
 
-
       if (mapController != null) {
         mapController!.animateCamera(
-          CameraUpdate.newLatLng(
-            LatLng(p.latitude, p.longitude),
-          ),
+          CameraUpdate.newLatLng(LatLng(p.latitude, p.longitude)),
         );
       }
     });
@@ -82,28 +80,30 @@ class _MyAppState extends State<MyApp> {
         body: position == null
             ? const Center(child: CircularProgressIndicator())
             : GoogleMap(
-          circles: {},
-          polygons: {Polygon(polygonId: PolygonId("1"),points: [LatLng(30.174999211815003, 31.203514679362613),LatLng(30.17504417247605, 31.194939522620345
-          ),LatLng(30.173740101892644,31.195130764254074),LatLng(30.173740101892644,31.195130764254074
-          )],),},
-          onMapCreated: (controller) {
-            mapController = controller;
-          },
-          mapType: MapType.normal,
-          markers: {
-            Marker(
-              markerId: const MarkerId("me"),
-              position: LatLng(position!.latitude, position!.longitude),
-              infoWindow: const InfoWindow(
-                title: "You are here",
+                circles: {
+                  Circle(
+                    circleId: CircleId("2"),
+                    center: LatLng(30.174999211815003, 31.203514679362613),
+                    radius: 50,
+                  ),
+                },
+
+                onMapCreated: (controller) {
+                  mapController = controller;
+                },
+                mapType: MapType.normal,
+                markers: {
+                  Marker(
+                    markerId: const MarkerId("me"),
+                    position: LatLng(position!.latitude, position!.longitude),
+                    infoWindow: const InfoWindow(title: "You are here"),
+                  ),
+                },
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(position!.latitude, position!.longitude),
+                  zoom: 17,
+                ),
               ),
-            ),
-          },
-          initialCameraPosition: CameraPosition(
-            target: LatLng(position!.latitude, position!.longitude),
-            zoom: 17,
-          ),
-        ),
       ),
     );
   }
