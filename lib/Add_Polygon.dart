@@ -36,15 +36,17 @@ class _AddPolygonState extends State<AddPolygon> {
                   strokeWidth: 0,
                 ),
               },
-              polygons: {
-                Polygon(
-                  polygonId: PolygonId("1"),
-                  points:newlistlatlng,
-                  fillColor: Colors.greenAccent.withOpacity(0.4),
-                  strokeWidth: 0,
-                ),
-              },
-              onMapCreated: (controller) {
+        polygons: {
+          if (newlistlatlng.isNotEmpty)
+            Polygon(
+              polygonId: const PolygonId("1"),
+              points: newlistlatlng,
+              fillColor: Colors.greenAccent.withOpacity(0.4),
+              strokeWidth: 0,
+            ),
+        },
+
+        onMapCreated: (controller) {
                 widget.mapController = controller;
               },
               mapType: MapType.normal,
