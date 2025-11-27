@@ -17,17 +17,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   Position? position;
   StreamSubscription<Position>? positionStream;
-  GoogleMapController? mapController; // control the camera
+  GoogleMapController? mapController;
 
   @override
   void initState() {
     super.initState();
     _determinePosition();
   }
-
-  ///-------------------------------
-  /// 1) REQUEST PERMISSIONS + START STREAM
-  ///-------------------------------
   Future<void> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -60,7 +56,7 @@ class _MyAppState extends State<MyApp> {
         position = p;
       });
 
-      // Move camera when user moves
+
       if (mapController != null) {
         mapController!.animateCamera(
           CameraUpdate.newLatLng(
@@ -71,18 +67,12 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  ///-------------------------------
-  /// 2) CLEAN STREAM WHEN CLOSE APP
-  ///-------------------------------
   @override
   void dispose() {
     positionStream?.cancel();
     super.dispose();
   }
 
-  ///-------------------------------
-  /// 3) UI + GOOGLE MAP
-  ///-------------------------------
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -92,11 +82,14 @@ class _MyAppState extends State<MyApp> {
         body: position == null
             ? const Center(child: CircularProgressIndicator())
             : GoogleMap(
+          circles: {},
+          polygons: {Polygon(polygonId: PolygonId("1"),points: [LatLng(30.174999211815003, 31.203514679362613),LatLng(30.17504417247605, 31.194939522620345
+          ),LatLng(30.173740101892644,31.195130764254074),LatLng(30.173740101892644,31.195130764254074
+          )],),},
           onMapCreated: (controller) {
             mapController = controller;
           },
           mapType: MapType.normal,
-
           markers: {
             Marker(
               markerId: const MarkerId("me"),
@@ -106,7 +99,6 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
           },
-
           initialCameraPosition: CameraPosition(
             target: LatLng(position!.latitude, position!.longitude),
             zoom: 17,
