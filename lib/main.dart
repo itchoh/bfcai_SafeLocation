@@ -79,30 +79,24 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(title: const Text("Google Map Live Tracking")),
         body: position == null
             ? const Center(child: CircularProgressIndicator())
-            : GoogleMap(
-                circles: {
-                  Circle(
-                    circleId: CircleId("2"),
-                    center: LatLng(30.174999211815003, 31.203514679362613),
-                    radius: 50,
+            : Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: SizedBox(
+                      height: double.infinity,
+                      width: double.infinity,
+                    ),
                   ),
-                },
-
-                onMapCreated: (controller) {
-                  mapController = controller;
-                },
-                mapType: MapType.normal,
-                markers: {
-                  Marker(
-                    markerId: const MarkerId("me"),
-                    position: LatLng(position!.latitude, position!.longitude),
-                    infoWindow: const InfoWindow(title: "You are here"),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: ElevatedButton(onPressed: (){}, child: Text("polygon"),),
                   ),
-                },
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(position!.latitude, position!.longitude),
-                  zoom: 17,
-                ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: ElevatedButton(onPressed: (){}, child: Text("Circle"),),
+                  )
+                ],
               ),
       ),
     );
