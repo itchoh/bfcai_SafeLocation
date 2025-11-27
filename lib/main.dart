@@ -18,6 +18,7 @@ class _MyAppState extends State<MyApp> {
   Position? position;
   StreamSubscription<Position>? positionStream;
   GoogleMapController? mapController;
+  double zoom=17;
 
   @override
   void initState() {
@@ -80,13 +81,32 @@ class _MyAppState extends State<MyApp> {
         body: position == null
             ? const Center(child: CircularProgressIndicator())
             : GoogleMap(
+          polygons: { Polygon(polygonId: PolygonId("1"),
+            points: [
+              LatLng(30.176321976537384, 31.200773727805625),
+              LatLng(30.176625612941034, 31.205861636837874),
+              LatLng(30.173874669554504, 31.20598598918641),
+              LatLng(30.17397831334172, 31.201020714858675),
+            ],
+            fillColor: Colors.green.withOpacity(.3),
+            strokeWidth: 0,
+          ),},
                 circles: {
                   Circle(
                     circleId: CircleId("2"),
-                    center: LatLng(30.174999211815003, 31.203514679362613),
+                    center: LatLng(position!.latitude,position!.longitude),
                     radius: 50,
+                    fillColor: Colors.green.withOpacity(.3),
+                    strokeWidth: 0,
+                    onTap: (){
+                      setState(() {
+                        zoom =10;
+                      });
+                    }
                   ),
+
                 },
+
 
                 onMapCreated: (controller) {
                   mapController = controller;
@@ -101,7 +121,7 @@ class _MyAppState extends State<MyApp> {
                 },
                 initialCameraPosition: CameraPosition(
                   target: LatLng(position!.latitude, position!.longitude),
-                  zoom: 17,
+                  zoom: zoom,
                 ),
               ),
       ),
