@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -15,6 +16,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   Position? position;
+  StreamSubscription<Position>? positionStream;
+  GoogleMapController? mapController; // control the camera
 
   @override
   void initState() {
@@ -22,54 +25,91 @@ class _MyAppState extends State<MyApp> {
     _determinePosition();
   }
 
+  ///-------------------------------
+  /// 1) REQUEST PERMISSIONS + START STREAM
+  ///-------------------------------
   Future<void> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
+    // 1) Check GPS ON/OFF
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+      return Future.error("Location services are disabled.");
     }
 
+    // 2) Check permission
     permission = await Geolocator.checkPermission();
+
+    // If denied → ask again
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        return Future.error("Location permissions are denied.");
       }
     }
 
+    // If denied forever → user must enable manually
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied.');
+      return Future.error("Permissions are permanently denied.");
     }
 
-    Position pos = await Geolocator.getCurrentPosition();
-    setState(() {
-      position = pos;
+    // 3) Start location stream
+    positionStream = Geolocator.getPositionStream().listen((Position p) {
+      setState(() {
+        position = p;
+      });
+
+      // Move camera when user moves
+      if (mapController != null) {
+        mapController!.animateCamera(
+          CameraUpdate.newLatLng(
+            LatLng(p.latitude, p.longitude),
+          ),
+        );
+      }
     });
   }
 
+  ///-------------------------------
+  /// 2) CLEAN STREAM WHEN CLOSE APP
+  ///-------------------------------
+  @override
+  void dispose() {
+    positionStream?.cancel();
+    super.dispose();
+  }
+
+  ///-------------------------------
+  /// 3) UI + GOOGLE MAP
+  ///-------------------------------
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(title: Text("Google Map")),
+        appBar: AppBar(title: const Text("Google Map Live Tracking")),
         body: position == null
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : GoogleMap(
+          onMapCreated: (controller) {
+            mapController = controller;
+          },
           mapType: MapType.normal,
+
           markers: {
             Marker(
-              markerId: MarkerId("1"),
-              position:
-              LatLng(position!.latitude, position!.longitude),
+              markerId: const MarkerId("me"),
+              position: LatLng(position!.latitude, position!.longitude),
+              infoWindow: const InfoWindow(
+                title: "You are here",
+              ),
             ),
           },
+
           initialCameraPosition: CameraPosition(
             target: LatLng(position!.latitude, position!.longitude),
-            zoom: 18,
+            zoom: 17,
           ),
         ),
       ),
