@@ -139,6 +139,7 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                   Align(
+
                     alignment: Alignment.bottomLeft,
                     child: ElevatedButton(
                       onPressed: () {

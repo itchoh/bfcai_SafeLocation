@@ -25,6 +25,7 @@ class _AddPolygonState extends State<AddPolygon> {
           setState(() {
             newlistlatlng.add(lat);
           });
+
         },
               circles: {
                 Circle(
