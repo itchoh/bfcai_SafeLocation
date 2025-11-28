@@ -38,12 +38,11 @@ class _AddPolygonState extends State<AddPolygon> {
             newlistlatlng.add(lat);
             newmarkerlist.add(Marker(
               markerId: MarkerId("${lat.longitude}"),
-              position: LatLng(
-                lat.latitude,
-                lat.longitude,
-              ),
-              infoWindow: const InfoWindow(title: "You are here"),
-            ),);
+              position: LatLng(lat.latitude, lat.longitude),
+              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue), // smaller color pin
+              infoWindow: InfoWindow(title: "${newmarkerlist.length }"),
+            ),
+                );
           });
 
         },
@@ -70,7 +69,7 @@ class _AddPolygonState extends State<AddPolygon> {
                 widget.mapController = controller;
               },
               mapType: MapType.normal,
-              markers:newmarkerlist.toSet() ,
+              markers:newmarkerlist.toSet(),
               initialCameraPosition: CameraPosition(
                 target: LatLng(
                   widget.position!.latitude,
