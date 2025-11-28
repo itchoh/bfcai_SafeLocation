@@ -14,6 +14,18 @@ class AddPolygon extends StatefulWidget {
 class _AddPolygonState extends State<AddPolygon> {
 
   List<LatLng>newlistlatlng=[];
+  late List<Marker>newmarkerlist=[
+    Marker(
+
+      markerId: const MarkerId("me"),
+      position: LatLng(
+        widget.position!.latitude,
+        widget.position!.longitude,
+      ),
+      infoWindow: const InfoWindow(title: "You are here"),
+    ),
+
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +36,14 @@ class _AddPolygonState extends State<AddPolygon> {
         onTap: (lat){
           setState(() {
             newlistlatlng.add(lat);
+            newmarkerlist.add(Marker(
+              markerId: MarkerId("${lat.longitude}"),
+              position: LatLng(
+                lat.latitude,
+                lat.longitude,
+              ),
+              infoWindow: const InfoWindow(title: "You are here"),
+            ),);
           });
 
         },
@@ -50,16 +70,7 @@ class _AddPolygonState extends State<AddPolygon> {
                 widget.mapController = controller;
               },
               mapType: MapType.normal,
-              markers: {
-                Marker(
-                  markerId: const MarkerId("me"),
-                  position: LatLng(
-                    widget.position!.latitude,
-                    widget.position!.longitude,
-                  ),
-                  infoWindow: const InfoWindow(title: "You are here"),
-                ),
-              },
+              markers:newmarkerlist.toSet() ,
               initialCameraPosition: CameraPosition(
                 target: LatLng(
                   widget.position!.latitude,

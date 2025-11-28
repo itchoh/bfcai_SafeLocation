@@ -83,9 +83,8 @@ class _ShowMapState extends State<ShowMap> {
               ),
             },
           ),
-          Positioned(
-            top: 700,
-            left: 24,
+          Align(
+            alignment: Alignment.bottomLeft,
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -101,9 +100,8 @@ class _ShowMapState extends State<ShowMap> {
               child: const Text("Polygon"),
             ),
           ),
-          Positioned(
-            top: 700,
-            right: 24,
+          Align(
+            alignment: Alignment.bottomRight,
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
