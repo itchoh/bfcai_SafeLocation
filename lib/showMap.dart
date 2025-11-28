@@ -10,11 +10,16 @@ class ShowMap extends StatefulWidget {
   @override
   State<ShowMap> createState() => _ShowMapState();
 }
+
 class _ShowMapState extends State<ShowMap> {
+  List<List<LatLng>> userPolygons = [];
+  List<Circle> userCircles = [];// polygon from AddPolygon
+
   @override
   void initState() {
     super.initState();
-    // Start tracking and update UI on each position change
+
+    // Start tracking position
     MapService.startTracking(() {
       if (mounted) setState(() {});
     });
@@ -22,7 +27,7 @@ class _ShowMapState extends State<ShowMap> {
 
   @override
   void dispose() {
-    MapService.stopTracking(); // prevent duplicate streams
+    MapService.stopTracking();
     super.dispose();
   }
 
@@ -39,6 +44,7 @@ class _ShowMapState extends State<ShowMap> {
       body: Stack(
         children: [
           GoogleMap(
+            padding: const EdgeInsets.only(bottom: 70),
             onMapCreated: (controller) {
               MapService.mapController = controller;
             },
@@ -50,6 +56,7 @@ class _ShowMapState extends State<ShowMap> {
               zoom: 17,
             ),
             mapType: MapType.normal,
+
             markers: {
               Marker(
                 markerId: const MarkerId("me"),
@@ -60,19 +67,23 @@ class _ShowMapState extends State<ShowMap> {
                 infoWindow: const InfoWindow(title: "You are here"),
               ),
             },
-            circles: {
-              Circle(
-                circleId: const CircleId("2"),
-                center: LatLng(30.174999, 31.203514),
-                radius: 50,
-                fillColor: Colors.greenAccent.withOpacity(0.4),
-                strokeWidth: 0,
-              ),
-            },
+
+            /// polygons shown here
             polygons: {
+              /// polygon returned from AddPolygon
+              for (int i = 0; i < userPolygons.length; i++)
+                Polygon(
+                  polygonId: PolygonId("user_poly_$i"),
+                  points: userPolygons[i],
+                  fillColor: Colors.blueAccent.withOpacity(0.4),
+                  strokeWidth: 1,
+                  strokeColor: Colors.blue,
+                ),
+
+              /// fixed example polygon
               Polygon(
-                polygonId: const PolygonId("1"),
-                points: [
+                polygonId: const PolygonId("fixed"),
+                points: const [
                   LatLng(30.176321, 31.200773),
                   LatLng(30.176625, 31.205861),
                   LatLng(30.173874, 31.205985),
@@ -82,39 +93,72 @@ class _ShowMapState extends State<ShowMap> {
                 strokeWidth: 0,
               ),
             },
+
+            /// circles example
+            circles: {
+              ...userCircles
+            },
           ),
+
+          // Polygon button
           Align(
             alignment: Alignment.bottomLeft,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => AddPolygon(
-                      position: MapService.position,
-                      mapController: MapService.mapController,
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green
+                ),
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AddPolygon(
+                        position: MapService.position,
+                        mapController: MapService.mapController,
+                      ),
                     ),
-                  ),
-                );
-              },
-              child: const Text("Polygon"),
+                  );
+
+                  /// If user pressed save
+                  if (result != null && mounted) {
+                    setState(() {
+                      userPolygons.add(List<LatLng>.from(result));
+                    });
+                  }
+                },
+                child: const Text("Polygon",style: TextStyle(color: Colors.white),),
+              ),
             ),
           ),
+
+          // Circle button
           Align(
             alignment: Alignment.bottomRight,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => Add_Circle(
-                      position: MapService.position,
-                      mapController: MapService.mapController,
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green
+                ),
+                onPressed: () async{
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => Add_Circle(
+                        position: MapService.position,
+                        mapController: MapService.mapController,
+                      ),
                     ),
-                  ),
-                );
-              },
-              child: const Text("Circle"),
+                  );
+                  if (result != null) {
+                    setState(() {
+                      userCircles.add(result);
+                    });
+                  }
+                },
+                child: const Text("Circle",style: TextStyle(color: Colors.white),),
+              ),
             ),
           ),
         ],

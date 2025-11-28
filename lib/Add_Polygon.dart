@@ -32,52 +32,72 @@ class _AddPolygonState extends State<AddPolygon> {
       appBar: AppBar(title: const Text("Google Map Live Tracking")),
       body: widget.position == null
           ? const Center(child: CircularProgressIndicator())
-          : GoogleMap(
-        onTap: (lat){
-          setState(() {
-            newlistlatlng.add(lat);
-            newmarkerlist.add(Marker(
-              markerId: MarkerId("${lat.longitude}"),
-              position: LatLng(lat.latitude, lat.longitude),
-              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue), // smaller color pin
-              infoWindow: InfoWindow(title: "${newmarkerlist.length }"),
-            ),
-                );
-          });
-
-        },
-              circles: {
-                Circle(
-                  circleId: CircleId("2"),
-                  center: LatLng(30.174999211815003, 31.203514679362613),
-                  radius: 50,
-                  fillColor: Colors.greenAccent.withOpacity(0.4),
-                  strokeWidth: 0,
-                ),
-              },
-        polygons: {
-          if (newlistlatlng.isNotEmpty)
-            Polygon(
-              polygonId: const PolygonId("1"),
-              points: newlistlatlng,
-              fillColor: Colors.greenAccent.withOpacity(0.4),
-              strokeWidth: 0,
-            ),
-        },
-
-        onMapCreated: (controller) {
-                widget.mapController = controller;
-              },
-              mapType: MapType.normal,
-              markers:newmarkerlist.toSet(),
-              initialCameraPosition: CameraPosition(
-                target: LatLng(
-                  widget.position!.latitude,
-                  widget.position!.longitude,
-                ),
-                zoom: 17,
+          : Stack(
+            children: [GoogleMap(
+              padding: const EdgeInsets.only(bottom: 70),
+              onTap: (lat){
+            setState(() {
+              newlistlatlng.add(lat);
+              newmarkerlist.add(Marker(
+                markerId: MarkerId("${lat.longitude}"),
+                position: LatLng(lat.latitude, lat.longitude),
+                icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue), // smaller color pin
+                infoWindow: InfoWindow(title: "${newmarkerlist.length }"),
               ),
-            ),
+                  );
+            });
+
+                    },
+                circles: {
+                  Circle(
+                    circleId: CircleId("2"),
+                    center: LatLng(30.174999211815003, 31.203514679362613),
+                    radius: 50,
+                    fillColor: Colors.greenAccent.withOpacity(0.4),
+                    strokeWidth: 0,
+                  ),
+                },
+                    polygons: {
+            if (newlistlatlng.isNotEmpty)
+              Polygon(
+                polygonId: const PolygonId("1"),
+                points: newlistlatlng,
+                fillColor: Colors.greenAccent.withOpacity(0.4),
+                strokeWidth: 0,
+              ),
+                    },
+
+                    onMapCreated: (controller) {
+                  widget.mapController = controller;
+                },
+                mapType: MapType.normal,
+                markers:newmarkerlist.toSet(),
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(
+                    widget.position!.latitude,
+                    widget.position!.longitude,
+                  ),
+                  zoom: 17,
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context, newlistlatlng);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
+                    child: const Text("Save Polygon",style: TextStyle(color: Colors.white),),
+                  ),
+                ),
+              ),
+            ]
+          ),
     );
   }
 }
