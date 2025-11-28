@@ -15,20 +15,17 @@ class ShowMap extends StatefulWidget {
 }
 
 class _ShowMapState extends State<ShowMap> {
-  static Position? position;
-  static StreamSubscription<Position>? positionStream;
-  static GoogleMapController? mapController;
 
   @override
   void initState() {
     super.initState();
-    determinePosition();
+    MapService.determinePosition();
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Google Map Live Tracking")),
-      body: position == null
+      body: MapService.position == null
           ? const Center(child: CircularProgressIndicator())
           : Stack(
         children: [
@@ -57,18 +54,18 @@ class _ShowMapState extends State<ShowMap> {
               ),
             },
             onMapCreated: (controller) {
-              mapController = controller;
+              MapService.mapController = controller;
             },
             mapType: MapType.normal,
             markers: {
               Marker(
                 markerId: const MarkerId("me"),
-                position: LatLng(position!.latitude, position!.longitude),
+                position: LatLng(MapService.position!.latitude, MapService.position!.longitude),
                 infoWindow: const InfoWindow(title: "You are here"),
               ),
             },
             initialCameraPosition: CameraPosition(
-              target: LatLng(position!.latitude, position!.longitude),
+              target: LatLng(MapService.position!.latitude, MapService.position!.longitude),
               zoom: 17,
             ),
           ),
@@ -82,8 +79,8 @@ class _ShowMapState extends State<ShowMap> {
                   MaterialPageRoute(
                     builder: (context) {
                       return AddPolygon(
-                        position: position,
-                        mapController: mapController,
+                        position: MapService.position,
+                        mapController:MapService. mapController,
                       );
                     },
                   ),
@@ -100,8 +97,8 @@ class _ShowMapState extends State<ShowMap> {
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) {
                     return Add_Circle(
-                      position: position,
-                      mapController: mapController,
+                      position: MapService.position,
+                      mapController: MapService.mapController,
                     );
                   },
                 ),);
