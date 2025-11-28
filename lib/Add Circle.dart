@@ -15,7 +15,7 @@ class _Add_CircleState extends State<Add_Circle> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Google Map Live Tracking")),
+      appBar: AppBar(title: const Text("Google Map Live Tracking"),),
       body: widget.position == null
           ? const Center(child: CircularProgressIndicator())
           : GoogleMap(
@@ -23,7 +23,6 @@ class _Add_CircleState extends State<Add_Circle> {
           setState(() {
            point=lat;
           });
-
         },
         circles: {
           if (point!=null)

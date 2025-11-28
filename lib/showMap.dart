@@ -1,40 +1,69 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'Add Circle.dart';
 import 'Add_Polygon.dart';
 import 'determineGeoLocation.dart';
+
 class ShowMap extends StatefulWidget {
   const ShowMap({super.key});
 
   @override
   State<ShowMap> createState() => _ShowMapState();
 }
-
 class _ShowMapState extends State<ShowMap> {
-
   @override
   void initState() {
     super.initState();
-    MapService.determinePosition();
+    // Start tracking and update UI on each position change
+    MapService.startTracking(() {
+      if (mounted) setState(() {});
+    });
   }
+
+  @override
+  void dispose() {
+    MapService.stopTracking(); // prevent duplicate streams
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (MapService.position == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text("Google Map Live Tracking")),
-      body: MapService.position == null
-          ? const Center(child: CircularProgressIndicator())
-          : Stack(
+      body: Stack(
         children: [
           GoogleMap(
+            onMapCreated: (controller) {
+              MapService.mapController = controller;
+            },
+            initialCameraPosition: CameraPosition(
+              target: LatLng(
+                MapService.position!.latitude,
+                MapService.position!.longitude,
+              ),
+              zoom: 17,
+            ),
+            mapType: MapType.normal,
+            markers: {
+              Marker(
+                markerId: const MarkerId("me"),
+                position: LatLng(
+                  MapService.position!.latitude,
+                  MapService.position!.longitude,
+                ),
+                infoWindow: const InfoWindow(title: "You are here"),
+              ),
+            },
             circles: {
               Circle(
-                circleId: CircleId("2"),
-                center: LatLng(30.174999211815003, 31.203514679362613),
-
+                circleId: const CircleId("2"),
+                center: LatLng(30.174999, 31.203514),
                 radius: 50,
                 fillColor: Colors.greenAccent.withOpacity(0.4),
                 strokeWidth: 0,
@@ -42,32 +71,17 @@ class _ShowMapState extends State<ShowMap> {
             },
             polygons: {
               Polygon(
-                polygonId: PolygonId("1"),
+                polygonId: const PolygonId("1"),
                 points: [
-                  LatLng(30.176321976537384, 31.200773727805625),
-                  LatLng(30.176625612941034, 31.205861636837874),
-                  LatLng(30.173874669554504, 31.20598598918641),
-                  LatLng(30.17397831334172, 31.201020714858675),
+                  LatLng(30.176321, 31.200773),
+                  LatLng(30.176625, 31.205861),
+                  LatLng(30.173874, 31.205985),
+                  LatLng(30.173978, 31.201020),
                 ],
                 fillColor: Colors.greenAccent.withOpacity(0.4),
                 strokeWidth: 0,
               ),
             },
-            onMapCreated: (controller) {
-              MapService.mapController = controller;
-            },
-            mapType: MapType.normal,
-            markers: {
-              Marker(
-                markerId: const MarkerId("me"),
-                position: LatLng(MapService.position!.latitude, MapService.position!.longitude),
-                infoWindow: const InfoWindow(title: "You are here"),
-              ),
-            },
-            initialCameraPosition: CameraPosition(
-              target: LatLng(MapService.position!.latitude, MapService.position!.longitude),
-              zoom: 17,
-            ),
           ),
           Positioned(
             top: 700,
@@ -77,16 +91,14 @@ class _ShowMapState extends State<ShowMap> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) {
-                      return AddPolygon(
-                        position: MapService.position,
-                        mapController:MapService. mapController,
-                      );
-                    },
+                    builder: (_) => AddPolygon(
+                      position: MapService.position,
+                      mapController: MapService.mapController,
+                    ),
                   ),
                 );
               },
-              child: Text("polygon"),
+              child: const Text("Polygon"),
             ),
           ),
           Positioned(
@@ -94,16 +106,17 @@ class _ShowMapState extends State<ShowMap> {
             right: 24,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) {
-                    return Add_Circle(
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => Add_Circle(
                       position: MapService.position,
                       mapController: MapService.mapController,
-                    );
-                  },
-                ),);
+                    ),
+                  ),
+                );
               },
-              child: Text("Circle"),
+              child: const Text("Circle"),
             ),
           ),
         ],

@@ -1,51 +1,55 @@
 import 'dart:async';
-
-import 'package:bfcai_safe_zone/showMap.dart';
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
- class MapService{
-   static Position? position;
-   static StreamSubscription<Position>? positionStream;
-   static GoogleMapController? mapController;
 
-   static Future<void> determinePosition() async {
-     bool serviceEnabled;
-     LocationPermission permission;
+class MapService {
+  static Position? position;
+  static StreamSubscription<Position>? _positionStream;
+  static GoogleMapController? mapController;
+  static bool _trackingStarted = false;
 
+  // Start location tracking
+  static Future<void> startTracking(Function()? onUpdate) async {
+    if (_trackingStarted) return; // avoid duplicate streams
+    _trackingStarted = true;
 
-     // 1) Check GPS ON/OFF
-     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-     if (!serviceEnabled) {
-       return Future.error("Location services are disabled.");
-     }
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error("Location services are disabled.");
+    }
 
-     // 2) Check permission
-     permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error("Location permissions are denied.");
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error("Permissions are permanently denied.");
+    }
 
-     // If denied → ask again
-     if (permission == LocationPermission.denied) {
-       permission = await Geolocator.requestPermission();
-       if (permission == LocationPermission.denied) {
-         return Future.error("Location permissions are denied.");
-       }
-     }
+    // Start listening
+    _positionStream = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 5,
+      ),
+    ).listen((Position p) {
+      position = p;
+      onUpdate?.call(); // notify UI
+      if (mapController != null) {
+        mapController!.animateCamera(
+          CameraUpdate.newLatLng(LatLng(p.latitude, p.longitude)),
+        );
+      }
+    });
+  }
 
-     // If denied forever → user must enable manually
-     if (permission == LocationPermission.deniedForever) {
-       return Future.error("Permissions are permanently denied.");
-     }
-
-     // 3) Start location stream
-     positionStream = Geolocator.getPositionStream().listen((Position p) {
-       position = p;
-
-
-       if (mapController != null) {
-         mapController!.animateCamera(
-           CameraUpdate.newLatLng(LatLng(p.latitude, p.longitude)),
-         );
-       }
-     });
-   }
- }
+  // Stop tracking (call in dispose)
+  static void stopTracking() {
+    _positionStream?.cancel();
+    _positionStream = null;
+    _trackingStarted = false;
+  }
+}
