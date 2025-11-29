@@ -1,18 +1,19 @@
-import 'package:turf_dart/turf.dart' as turf;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:turf/turf.dart' as turf;
 
 bool isInsideAnyPolygon(LatLng userPosition, List<List<LatLng>> polygons) {
-  final point = turf.Point(turf.Position(userPosition.longitude, userPosition.latitude));
+  final point = turf.Point(
+    coordinates: turf.Position(userPosition.longitude, userPosition.latitude),
+  );
 
   for (var poly in polygons) {
-    final positions = poly
-        .map((p) => turf.Position(p.longitude, p.latitude))
-        .toList();
+    final positions = poly.map((p) => turf.Position(p.longitude, p.latitude)).toList();
+    final polygon = turf.Polygon(coordinates: [positions]);
 
-    final polygon = turf.Polygon([positions]);
-
-    if (turf.booleanPointInPolygon(point, polygon)) {
-      return true; // Found a polygon containing the user
+    if (turf.booleanPointInPolygon(point as turf.Position, polygon)) {
+      return true; // User is inside this polygon
     }
   }
-  return false;
+
+  return false; // Not inside any polygon
 }

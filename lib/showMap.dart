@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'Add Circle.dart';
 import 'Add_Polygon.dart';
+import 'checkCircleFun.dart';
+import 'checkPolyFun.dart';
 import 'determineGeoLocation.dart';
 
 class ShowMap extends StatefulWidget {
