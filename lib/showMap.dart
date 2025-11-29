@@ -13,7 +13,7 @@ class ShowMap extends StatefulWidget {
 
 class _ShowMapState extends State<ShowMap> {
   List<List<LatLng>> userPolygons = [];
-  List<Circle> userCircles = [];// polygon from AddPolygon
+  List<Circle> userCircles = [];
 
   @override
   void initState() {
@@ -22,6 +22,44 @@ class _ShowMapState extends State<ShowMap> {
     // Start tracking position
     MapService.startTracking(() {
       if (mounted) setState(() {});
+      if(userPolygons.isNotEmpty){
+      final bool insidePolygon = isInsideAnyPolygon(LatLng(
+        MapService.position!.latitude,
+        MapService.position!.longitude,
+      ), userPolygons);
+      print("$insidePolygon polygon");
+      }
+      else{
+        /*showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text("Alert Dialog Box"),
+              content: const Text("You have raised an Alert Dialog Box"),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                  child: Container(
+                    color: Colors.green,
+                    padding: const EdgeInsets.all(14),
+                    child: const Text("Okay"),
+                  ),
+                ),
+              ],
+            ),*/
+        print("List of Polygon is empty");
+      }
+      if(userCircles.isNotEmpty) {
+        final bool insideCircle = isInsideAnyCircle(LatLng(
+          MapService.position!.latitude,
+          MapService.position!.longitude,
+        ), userCircles);
+        print("${insideCircle} circle ");
+      }
+      else{
+        print ("List of Circle is empty ");
+      }
     });
   }
 
