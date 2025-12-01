@@ -2,6 +2,7 @@ import 'package:bfcai_safe_zone/auth/registerScreen.dart';
 import 'package:bfcai_safe_zone/auth/widgets/materialButtonWidget.dart';
 import 'package:bfcai_safe_zone/auth/widgets/textFormFieldWidget.dart';
 import 'package:bfcai_safe_zone/auth/widgets/textRichWidget.dart';
+import 'package:bfcai_safe_zone/showMap.dart';
 import 'package:flutter/material.dart';
 
 import '../data/firebase/firebase_auth.dart';
@@ -69,6 +70,8 @@ class LoginScreen extends StatelessWidget {
                             password:password.text ,
                             username:username.text );
                       }
+                      Navigator.of(context).pushNamed(ShowMap.routeName);
+
 
                     }),
               ],

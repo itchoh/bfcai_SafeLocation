@@ -8,6 +8,7 @@ import 'determineGeoLocation.dart';
 
 class ShowMap extends StatefulWidget {
   const ShowMap({super.key});
+  static String routeName= "showMap";
 
   @override
   State<ShowMap> createState() => _ShowMapState();
