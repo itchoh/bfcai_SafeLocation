@@ -1,8 +1,17 @@
 import 'package:bfcai_safe_zone/showMap.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'data/firebase/firebase_auth.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+// Ideal time to initialize
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );//...
 }
 
 class MyApp extends StatefulWidget {
