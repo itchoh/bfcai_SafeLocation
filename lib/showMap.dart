@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'Add Circle.dart';
 import 'Add_Polygon.dart';
+import 'Local_Notification.dart';
 import 'checkCircleFun.dart';
 import 'checkPolyFun.dart';
 import 'determineGeoLocation.dart';
@@ -30,6 +31,12 @@ class _ShowMapState extends State<ShowMap> {
         MapService.position!.latitude,
         MapService.position!.longitude,
       ), userPolygons);
+      if (insidePolygon){
+        LocalNotificationService.showBasicNotification;
+      }
+      else{
+        LocalNotificationService.showBasicNotification2;
+      }
       print("$insidePolygon polygon");
       }
       else{

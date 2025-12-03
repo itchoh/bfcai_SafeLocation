@@ -1,11 +1,11 @@
 import 'package:bfcai_safe_zone/auth/widgets/materialButtonWidget.dart';
 import 'package:bfcai_safe_zone/auth/widgets/textFormFieldWidget.dart';
 import 'package:bfcai_safe_zone/auth/widgets/textRichWidget.dart';
-import 'package:bfcai_safe_zone/showMap.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide FirebaseAuth;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../utils/validator_function.dart';
+import 'widgets/textFormFieldWidget.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

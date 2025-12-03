@@ -1,4 +1,4 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 class TextRichWidget extends StatelessWidget {
   const TextRichWidget({super.key, required this.mainTitle, required this.subTitle, this.onTap});
   final String mainTitle;
