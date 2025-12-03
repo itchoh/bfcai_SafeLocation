@@ -1,71 +1,73 @@
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-//import 'package:flutter_timezone/flutter_timezone.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
+import 'package:permission_handler/permission_handler.dart';
 
 class LocalNotificationService {
   static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
+
   static StreamController<NotificationResponse> streamController =
   StreamController();
+
   static onTap(NotificationResponse notificationResponse) {
-    // log(notificationResponse.id!.toString());
-    // log(notificationResponse.payload!.toString());
     streamController.add(notificationResponse);
-    // Navigator.push(context, route);
+  }
+
+  /// Request Notification Permission (Android 13+, iOS)
+  static Future requestPermission() async {
+    // ANDROID 13+ Permission
+    var status = await Permission.notification.status;
+    if (!status.isGranted) {
+      await Permission.notification.request();
+    }
+
+    // iOS Permission
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
   }
 
   static Future init() async {
-    InitializationSettings settings = const InitializationSettings(
+    // Request permission BEFORE initializing
+    await requestPermission();
+
+    const InitializationSettings settings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(),
     );
-    flutterLocalNotificationsPlugin.initialize(
+
+    await flutterLocalNotificationsPlugin.initialize(
       settings,
       onDidReceiveNotificationResponse: onTap,
       onDidReceiveBackgroundNotificationResponse: onTap,
     );
   }
 
-  //basic Notification
-  static void showBasicNotification() async {
-    AndroidNotificationDetails android = AndroidNotificationDetails(
-        'id 1', 'basic notification',
-        importance: Importance.max,
-        priority: Priority.high,
-        sound:
-        RawResourceAndroidNotificationSound('sound.wav'.split('.').first));
-    NotificationDetails details = NotificationDetails(
+  static Future showBasicNotification() async {
+    const AndroidNotificationDetails android = AndroidNotificationDetails(
+      'default_channel_id',
+      'Default Notifications',
+      channelDescription: 'Basic alerts',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+    );
+
+    const NotificationDetails details = NotificationDetails(
       android: android,
     );
+
     await flutterLocalNotificationsPlugin.show(
-      0,
-      'Baisc Notification',
-      'body',
+      1,
+      'Basic Notification',
+      'This is your message.',
       details,
-      payload: "Payload Data",
+      payload: "data",
     );
   }
-
-  //basic Notification2
-  static void showBasicNotification2() async {
-    AndroidNotificationDetails android = AndroidNotificationDetails(
-        'id 3', 'basic notification1',
-        importance: Importance.max,
-        priority: Priority.high,
-        sound:
-        RawResourceAndroidNotificationSound('sound.wav'.split('.').first));
-    NotificationDetails details = NotificationDetails(
-      android: android,
-    );
-    await flutterLocalNotificationsPlugin.show(
-      4,
-      'Basic Notification',
-      'body',
-      details,
-      payload: "Payload Data",
-    );
-  }}
+}

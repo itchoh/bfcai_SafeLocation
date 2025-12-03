@@ -11,6 +11,7 @@ class ShowMap extends StatefulWidget {
   const ShowMap({super.key});
   static String routeName= "showMap";
 
+
   @override
   State<ShowMap> createState() => _ShowMapState();
 }
@@ -18,7 +19,7 @@ class ShowMap extends StatefulWidget {
 class _ShowMapState extends State<ShowMap> {
   List<List<LatLng>> userPolygons = [];
   List<Circle> userCircles = [];
-
+  bool check = true;
   @override
   void initState() {
     super.initState();
@@ -31,13 +32,13 @@ class _ShowMapState extends State<ShowMap> {
         MapService.position!.latitude,
         MapService.position!.longitude,
       ), userPolygons);
-      if (insidePolygon){
-        LocalNotificationService.showBasicNotification;
+
+      if (check==insidePolygon){
+        LocalNotificationService.showBasicNotification();
+        check=!check;
+        //print("$insidePolygon polygon");
       }
-      else{
-        LocalNotificationService.showBasicNotification2;
-      }
-      print("$insidePolygon polygon");
+
       }
       else{
         /*showDialog(
@@ -71,6 +72,7 @@ class _ShowMapState extends State<ShowMap> {
         print ("List of Circle is empty ");
       }
     });
+
   }
 
   @override
@@ -86,7 +88,6 @@ class _ShowMapState extends State<ShowMap> {
         body: Center(child: CircularProgressIndicator()),
       );
     }
-
     return Scaffold(
       appBar: AppBar(title: const Text("Google Map Live Tracking")),
       body: Stack(
@@ -155,7 +156,7 @@ class _ShowMapState extends State<ShowMap> {
               padding: const EdgeInsets.all(10),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green
+                    backgroundColor: Colors.green
                 ),
                 onPressed: () async {
                   final result = await Navigator.push(
@@ -187,7 +188,7 @@ class _ShowMapState extends State<ShowMap> {
               padding: const EdgeInsets.all(10),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green
+                    backgroundColor: Colors.green
                 ),
                 onPressed: () async{
                   final result = await Navigator.push(
@@ -211,6 +212,14 @@ class _ShowMapState extends State<ShowMap> {
           ),
         ],
       ),
+
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     LocalNotificationService.showBasicNotification();
+      //   },
+      //   child: Icon(Icons.notification_add),
+      // )
+      // ,
     );
   }
 }
