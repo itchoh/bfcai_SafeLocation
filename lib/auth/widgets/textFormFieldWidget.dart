@@ -16,13 +16,13 @@ class TextFormFieldWidget extends StatelessWidget {
             color: Colors.grey
         ),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(24),
             borderSide: BorderSide(
                 color: Color(0xff5F33E1)
             )
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(24),
         ) ,
         errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),

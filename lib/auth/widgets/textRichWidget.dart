@@ -16,7 +16,7 @@ class TextRichWidget extends StatelessWidget {
               TextSpan(text: mainTitle),
               TextSpan(text: subTitle,
                   style:TextStyle(
-                      color: Color(0xff5F33E1),
+                      color: Colors.green,
                       fontSize: 14
                   ) ),
             ]

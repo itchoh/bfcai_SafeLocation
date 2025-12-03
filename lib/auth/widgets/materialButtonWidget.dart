@@ -8,12 +8,12 @@ class MaterialButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-
       minWidth: double.infinity,
-      height: 48,
+      height: 50,
       onPressed: ontap,
       color: background,
-      shape: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      shape: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32)),
       child: Text(title,
         style: TextStyle(
           color: textColor,
