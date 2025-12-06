@@ -5,7 +5,8 @@ abstract class AppPreference{
     prefs = await SharedPreferences.getInstance();
   }
   static Future<void> saveData(String key,dynamic value)async{
-    if(value is String){
+
+     if(value is String){
       await prefs.setString(key,value);
     }else if(value is int){
       await prefs.setInt(key,value);
@@ -18,8 +19,11 @@ abstract class AppPreference{
     }
   }
   static Future<Object?>getData(String key)async{
-      return prefs.get(key);
+    if (prefs.get(key)==null){
+      prefs.get(key);
     }
+    return prefs.get(key);
+  }
   static Future<void>removeData(String key)async{
       await prefs.remove(key);
     }

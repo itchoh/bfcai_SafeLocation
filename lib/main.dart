@@ -22,10 +22,10 @@ Future<void> main() async {
   await LocalNotificationService.init();
 
 
-  bool isFirstTime = await AppPreference.getData("id")==null ? true:false;
-  String initialRoute;
+  var userId = await AppPreference.getData("id");
 
-  if (isFirstTime) {
+  String initialRoute;
+  if (userId == false) {
     //await AppPreference.saveData("id", false);
     initialRoute = LoginScreen.routeName;
   } else {
