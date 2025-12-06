@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constant/TextStyles.dart';
 import '../../core/utils/validator_function.dart';
-import '../../utils/app_shared_preference.dart';
+import '../../core/utils/app_shared_preference.dart';
 import '../Map_Location/showMap.dart';
 
 class LoginScreen extends StatefulWidget {
