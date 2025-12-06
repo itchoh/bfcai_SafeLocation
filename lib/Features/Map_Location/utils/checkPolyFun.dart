@@ -7,10 +7,9 @@ bool isInsideAnyPolygon(LatLng userPosition, List<List<LatLng>> polygons) {
   );
 
   for (var poly in polygons) {
-    // Convert LatLng to turf.Position
+
     final positions = poly.map((p) => turf.Position(p.longitude, p.latitude)).toList();
 
-    // Ensure the polygon is closed (first == last)
     if (positions.first != positions.last) {
       positions.add(positions.first);
     }
@@ -18,9 +17,9 @@ bool isInsideAnyPolygon(LatLng userPosition, List<List<LatLng>> polygons) {
     final polygon = turf.Polygon(coordinates: [positions]);
 
     if (turf.booleanPointInPolygon(point.coordinates, polygon)) {
-      return true; // User is inside this polygon
+      return true;
     }
   }
 
-  return false; // Not inside any polygon
+  return false;
 }

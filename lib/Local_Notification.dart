@@ -13,15 +13,12 @@ class LocalNotificationService {
     streamController.add(notificationResponse);
   }
 
-  /// Request Notification Permission (Android 13+, iOS)
   static Future requestPermission() async {
-    // ANDROID 13+ Permission
     var status = await Permission.notification.status;
     if (!status.isGranted) {
       await Permission.notification.request();
     }
 
-    // iOS Permission
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
         IOSFlutterLocalNotificationsPlugin>()
@@ -33,7 +30,6 @@ class LocalNotificationService {
   }
 
   static Future init() async {
-    // Request permission BEFORE initializing
     await requestPermission();
 
     const InitializationSettings settings = InitializationSettings(
