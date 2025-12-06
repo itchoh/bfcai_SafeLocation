@@ -1,8 +1,8 @@
-
 import 'package:flutter/cupertino.dart';
-import '../auth/login_screen.dart';
-import '../auth/registerScreen.dart';
-import '../showMap.dart';
+import '../../Features/Map_Location/showMap.dart';
+import '../../Features/auth/login_screen.dart';
+import '../../Features/auth/registerScreen.dart';
+
 
 
 Map<String,WidgetBuilder>routes={

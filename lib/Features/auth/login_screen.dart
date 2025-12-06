@@ -1,13 +1,13 @@
-import 'package:bfcai_safe_zone/auth/registerScreen.dart';
-import 'package:bfcai_safe_zone/auth/widgets/materialButtonWidget.dart';
-import 'package:bfcai_safe_zone/auth/widgets/textFormFieldWidget.dart';
-import 'package:bfcai_safe_zone/auth/widgets/textRichWidget.dart';
-import 'package:bfcai_safe_zone/showMap.dart';
+import 'package:bfcai_safe_zone/Features/auth/registerScreen.dart';
+import 'package:bfcai_safe_zone/Features/auth/widgets/materialButtonWidget.dart';
+import 'package:bfcai_safe_zone/Features/auth/widgets/textFormFieldWidget.dart';
+import 'package:bfcai_safe_zone/Features/auth/widgets/textRichWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-//import '../data/firebase/firebase_auth.dart';
-import '../utils/validator_function.dart';
+import '../../core/constant/TextStyles.dart';
+import '../../core/utils/validator_function.dart';
+import '../Map_Location/showMap.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -35,18 +35,11 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               SizedBox(height: 122,),
               Text("Login",
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
+                style:  Styles.text_Style32
               ),
               SizedBox(height: 53,),
-
               Text("Username",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: Styles.text_Style16
               ),
               TextFormFieldWidget(
                 hintText: "enter username...",
@@ -54,14 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 validator:Validator.validateEmail,
               ),
               SizedBox(height: 53,),
-
               Text("Password",
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400
-                ),
+                style:  Styles.text_Style16
               ),
-              //Don’t have an account? Register
               TextFormFieldWidget(
                 hintText: "Password...",
                 controller: password,
@@ -69,7 +57,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
               ),
               SizedBox(height: 71,),
-
               MaterialButtonWidget(
                   title: "Login",
                   ontap:() async{
@@ -88,16 +75,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
 
                   }),
+              TextRichWidget(
+                mainTitle:"Don’t have an account? " ,
+                subTitle:"Register" ,
+                onTap:() {Navigator.of(context).pushNamed(RegisterScreen.routeName);},
+              ),
             ],
           ),
         ),
       ),
-      floatingActionButton: TextRichWidget(
-        mainTitle:"Don’t have an account? " ,
-        subTitle:"Register" ,
-        onTap:() {Navigator.of(context).pushNamed(RegisterScreen.routeName);},
-      )
-      ,
     );
   }
 }
