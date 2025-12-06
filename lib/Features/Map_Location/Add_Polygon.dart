@@ -72,6 +72,10 @@ class _AddPolygonState extends State<AddPolygon> {
                 },
                 mapType: MapType.normal,
                 markers:newmarkerlist.toSet(),
+
+
+
+
                 initialCameraPosition: CameraPosition(
                   target: LatLng(
                     widget.position!.latitude,
