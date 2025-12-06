@@ -1,6 +1,12 @@
 import 'package:bfcai_safe_zone/Features/Map_Location/utils/check.dart';
+import 'package:bfcai_safe_zone/Features/Map_Location/utils/checkCircleFun.dart';
+import 'package:bfcai_safe_zone/Features/Map_Location/utils/checkPolyFun.dart';
+import 'package:bfcai_safe_zone/Features/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../Local_Notification.dart';
+import '../../utils/app_shared_preference.dart';
 import 'Add Circle.dart';
 import 'Add_Polygon.dart';
 
@@ -17,14 +23,42 @@ class ShowMap extends StatefulWidget {
 class _ShowMapState extends State<ShowMap> {
   List<List<LatLng>> userPolygons = [];
   List<Circle> userCircles = [];
-
+  bool check1 = true;
+  bool check2 = true;
   @override
   void initState() {
     super.initState();
-    bool checkMounten = checkZone(userPolygons, userCircles, mounted);
-    if (checkMounten == true) {
-      setState(() {});
-    }
+
+    MapService.startTracking(() {
+      if (userPolygons.isNotEmpty) {
+        final bool insidePolygon = isInsideAnyPolygon(
+          LatLng(MapService.position!.latitude, MapService.position!.longitude),
+          userPolygons,
+        );
+
+        if (check1 == insidePolygon) {
+          LocalNotificationService.showBasicNotification();
+          check1 = !check1;
+        }
+        AppPreference.saveData("polygon", userPolygons);
+        
+        
+        
+      }
+      if (userCircles.isNotEmpty) {
+        final bool insideCircle = isInsideAnyCircle(
+          LatLng(MapService.position!.latitude, MapService.position!.longitude),
+          userCircles,
+        );
+        if (check2 == insideCircle) {
+          LocalNotificationService.showBasicNotification();
+          check2 = !check2;
+        }
+      }
+      if (mounted) {
+        return setState(() {});
+      }
+    });
   }
 
   @override
@@ -36,7 +70,13 @@ class _ShowMapState extends State<ShowMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Google Map Live Tracking")),
+      appBar: AppBar(
+        title: const Text("Google Map Live Tracking"),
+        leading: IconButton(onPressed: () {
+          AppPreference.removeData("id");
+          Navigator.of(context).pushNamed(LoginScreen.routeName);
+        }, icon: Icon(Icons.logout)),
+      ),
       body: MapService.position == null
           ? Center(child: CircularProgressIndicator())
           : Stack(
@@ -76,48 +116,59 @@ class _ShowMapState extends State<ShowMap> {
                   },
                   circles: {...userCircles},
                 ),
-                buildAlign(context,Alignment.bottomLeft, AddPolygon(
-                  position: MapService.position,
-                  mapController: MapService.mapController,
-                ),userPolygons),
-                buildAlign(context,Alignment.bottomRight,Add_Circle(
-                  position: MapService.position,
-                  mapController: MapService.mapController,
-                ),userCircles),
+                buildAlign(
+                  context,
+                  Alignment.bottomLeft,
+                  AddPolygon(
+                    position: MapService.position,
+                    mapController: MapService.mapController,
+                  ),
+                  userPolygons,
+                ),
+                buildAlign(
+                  context,
+                  Alignment.bottomRight,
+                  Add_Circle(
+                    position: MapService.position,
+                    mapController: MapService.mapController,
+                  ),
+                  userCircles,
+                ),
               ],
             ),
     );
   }
-  Align buildAlign(BuildContext context,Alignment Alignn ,Widget w,List listt) {
+
+  Align buildAlign(
+    BuildContext context,
+    Alignment Alignn,
+    Widget w,
+    List listt,
+  ) {
     return Align(
-                alignment: Alignn,
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ),
-                    onPressed: () async {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) {
-                            return w;
-                          },
-                        ),
-                      );
-                      if (result != null && mounted) {
-                        setState(() {
-                          listt.add(List<LatLng>.from(result));
-                        });
-                      }
-                    },
-                    child: const Text(
-                      "Polygon",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-              );
+      alignment: Alignn,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+          onPressed: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) {
+                  return w;
+                },
+              ),
+            );
+            if (result != null && mounted) {
+              setState(() {
+                listt.add(List<LatLng>.from(result));
+              });
+            }
+          },
+          child: const Text("Polygon", style: TextStyle(color: Colors.white)),
+        ),
+      ),
+    );
   }
 }

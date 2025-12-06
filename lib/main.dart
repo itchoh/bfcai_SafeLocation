@@ -25,7 +25,7 @@ Future<void> main() async {
   var userId = await AppPreference.getData("id");
 
   String initialRoute;
-  if (userId == false) {
+  if (userId == null) {
     //await AppPreference.saveData("id", false);
     initialRoute = LoginScreen.routeName;
   } else {
