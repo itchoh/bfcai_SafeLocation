@@ -18,11 +18,11 @@ abstract class AppPreference{
       print("Unsupported type");
     }
   }
-  static Future<Object?>getData(String key)async{
+  static Future<Object>getData(String key)async{
     if (prefs.get(key)==null){
-      prefs.get(key);
+      prefs.setBool(key,false);
     }
-    return prefs.get(key);
+    return prefs.get(key)!;
   }
   static Future<void>removeData(String key)async{
       await prefs.remove(key);
