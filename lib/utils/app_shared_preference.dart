@@ -21,7 +21,9 @@ abstract class AppPreference{
     }
   }
   static Future<Object?>getData(String key)async{
-
+    if (prefs.get(key)==null){
+      prefs.get(key);
+    }
     return prefs.get(key);
   }
   static Future<void>removeData(String key)async{
