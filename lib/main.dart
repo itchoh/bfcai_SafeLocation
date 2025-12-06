@@ -1,31 +1,56 @@
+import 'package:bfcai_safe_zone/utils/app_shared_preference.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Features/Map_Location/showMap.dart';
+import 'Features/auth/login_screen.dart';
 import 'Local_Notification.dart';
 import 'core/constant/Routes.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await LocalNotificationService.init();
+
+  // SharedPreferences
+  await AppPreference.initSharedPreference();
+
+  // Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  // Local Notifications
+  await LocalNotificationService.init();
+
+
+  bool isFirstTime = await AppPreference.getData("id")==null ? true:false;
+  String initialRoute;
+
+  if (isFirstTime) {
+    //await AppPreference.saveData("id", false);
+    initialRoute = LoginScreen.routeName;
+  } else {
+    //final userId = await AppPreference.getData("id");
+    initialRoute=ShowMap.routeName ;
+  }
+
+  runApp(MyApp(routeName: initialRoute));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.routeName});
+  final String routeName;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: routes,
-      initialRoute: ShowMap.routeName,
+      initialRoute: routeName,
     );
   }
 }
+
+
 
 // ---------------- PERMISSION REQUEST -------------------
 

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constant/TextStyles.dart';
 import '../../core/utils/validator_function.dart';
+import '../../utils/app_shared_preference.dart';
 import '../Map_Location/showMap.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -60,13 +61,14 @@ class _LoginScreenState extends State<LoginScreen> {
               MaterialButtonWidget(
                   title: "Login",
                   ontap:() async{
-                    if(formKey.currentState!.validate()){
+
                       try{
                         UserCredential userCredential = await FirebaseAuth.instance
                             .signInWithEmailAndPassword(
                             email: username.text,
                             password: password.text);
                         setState(() {});
+                        AppPreference.saveData("id",username.text);
                         Navigator.of(context).pushNamed(ShowMap.routeName);
                         username.clear();
                         password.clear();
@@ -74,7 +76,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       catch(e){}
                     }
 
-                  }),
+
+                  ),
               TextRichWidget(
                 mainTitle:"Don’t have an account? " ,
                 subTitle:"Register" ,
