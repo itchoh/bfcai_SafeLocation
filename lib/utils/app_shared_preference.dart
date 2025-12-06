@@ -14,16 +14,11 @@ abstract class AppPreference{
       await prefs.setBool(key,value);
     }else if(value is double){
       await prefs.setDouble(key,value);
-    }else if(value is List<String>){
-      await prefs.setStringList(key,value);
     }else {
       print("Unsupported type");
     }
   }
   static Future<Object?>getData(String key)async{
-    if (prefs.get(key)==null){
-      prefs.get(key);
-    }
     return prefs.get(key);
   }
   static Future<void>removeData(String key)async{

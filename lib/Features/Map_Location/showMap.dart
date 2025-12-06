@@ -40,10 +40,6 @@ class _ShowMapState extends State<ShowMap> {
           LocalNotificationService.showBasicNotification();
           check1 = !check1;
         }
-        AppPreference.saveData("polygon", userPolygons);
-        
-        
-        
       }
       if (userCircles.isNotEmpty) {
         final bool insideCircle = isInsideAnyCircle(
