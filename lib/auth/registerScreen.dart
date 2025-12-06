@@ -1,11 +1,9 @@
 import 'package:bfcai_safe_zone/auth/widgets/materialButtonWidget.dart';
 import 'package:bfcai_safe_zone/auth/widgets/textFormFieldWidget.dart';
 import 'package:bfcai_safe_zone/auth/widgets/textRichWidget.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide FirebaseAuth;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../utils/validator_function.dart';
-import 'widgets/textFormFieldWidget.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -100,16 +98,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
                   //{FirebaseAuth.login(password:password.text ,username:username.text );}
                 ),
+                TextRichWidget(
+                  mainTitle:"Already have an account? " ,
+                  subTitle:"Login" ,
+                  onTap:() {Navigator.of(context).pop();},
+                )
               ],
             ),
           ),
         ),
         //Already have an account? Login
-        floatingActionButton: TextRichWidget(
-          mainTitle:"Already have an account? " ,
-          subTitle:"Login" ,
-          onTap:() {Navigator.of(context).pop();},
-        )
+
     );
   }
 }
