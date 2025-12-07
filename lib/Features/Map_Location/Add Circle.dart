@@ -1,13 +1,9 @@
-import 'package:flutter/material.dart' ;
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Add_Circle extends StatefulWidget {
-  Add_Circle({
-    super.key,
-    required this.position,
-    required this.mapController,
-  });
+  Add_Circle({super.key, required this.position, required this.mapController});
 
   final Position? position;
   GoogleMapController? mapController;
@@ -63,11 +59,9 @@ class _Add_CircleState extends State<Add_Circle> {
                 widget.position!.latitude,
                 widget.position!.longitude,
               ),
-              zoom: 17,
+              zoom: 18,
             ),
           ),
-
-          // Slider لتحديد نصف القطر
           if (point != null)
             Align(
               alignment: Alignment.topCenter,
@@ -108,26 +102,23 @@ class _Add_CircleState extends State<Add_Circle> {
                 ),
               ),
             ),
-
-          // زر Save
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: ElevatedButton(
                 onPressed: () {
-                  c=Circles(radius: radius, point: point);
-                  // if (point == null) return;
-                  Navigator.pop(
-                    context,
-                    c
-                  );
+                  c = Circles(radius: radius, point: point);
+                  Navigator.pop(context, c);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   minimumSize: const Size(double.infinity, 50),
                 ),
-                child: const Text("Save Circle"),
+                child: const Text(
+                  "Save Circle",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ),
@@ -136,8 +127,9 @@ class _Add_CircleState extends State<Add_Circle> {
     );
   }
 }
-class Circles{
+
+class Circles {
   double? radius;
   LatLng? point;
-  Circles({required this.radius,required this.point});
+  Circles({required this.radius, required this.point});
 }

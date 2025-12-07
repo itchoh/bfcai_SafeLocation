@@ -88,7 +88,7 @@ class _ShowMapState extends State<ShowMap> {
                       MapService.position!.latitude,
                       MapService.position!.longitude,
                     ),
-                    zoom: 19,
+                    zoom: 18,
                   ),
                   mapType: MapType.normal,
                   markers: {

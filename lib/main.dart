@@ -10,15 +10,12 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // SharedPreferences
   await AppPreference.initSharedPreference();
 
-  // Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Local Notifications
   await LocalNotificationService.init();
 
 
@@ -26,10 +23,8 @@ Future<void> main() async {
 
   String initialRoute;
   if (userId == null) {
-    //await AppPreference.saveData("id", false);
     initialRoute = LoginScreen.routeName;
   } else {
-    //final userId = await AppPreference.getData("id");
     initialRoute=ShowMap.routeName ;
   }
 
@@ -49,22 +44,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
-
-// ---------------- PERMISSION REQUEST -------------------
-
-// Future<void> requestNotificationPermission() async {
-//   // Android 13+ & iOS
-//   var status = await Permission.notification.status;
-//
-//   if (!status.isGranted) {
-//     status = await Permission.notification.request();
-//   }
-//
-//   if (status.isGranted) {
-//     print("Notifications permission granted!");
-//   } else {
-//     print("Notifications permission denied.");
-//   }
-// }

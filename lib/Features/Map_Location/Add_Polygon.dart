@@ -46,7 +46,6 @@ class _AddPolygonState extends State<AddPolygon> {
               ),
                   );
             });
-
                     },
                 circles: {
                   Circle(
@@ -66,22 +65,17 @@ class _AddPolygonState extends State<AddPolygon> {
                 strokeWidth: 0,
               ),
                     },
-
                     onMapCreated: (controller) {
                   widget.mapController = controller;
                 },
                 mapType: MapType.normal,
                 markers:newmarkerlist.toSet(),
-
-
-
-
                 initialCameraPosition: CameraPosition(
                   target: LatLng(
                     widget.position!.latitude,
                     widget.position!.longitude,
                   ),
-                  zoom: 17,
+                  zoom: 18,
                 ),
               ),
               Align(
