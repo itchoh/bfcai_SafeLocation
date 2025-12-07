@@ -1,7 +1,4 @@
-import 'dart:ffi';
-
-import 'package:bfcai_safe_zone/Features/Map_Location/utils/determineGeoLocation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' ;
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -22,6 +19,7 @@ class Add_Circle extends StatefulWidget {
 class _Add_CircleState extends State<Add_Circle> {
   LatLng? point;
   double radius = 100;
+  Circles? c;
 
   @override
   Widget build(BuildContext context) {
@@ -118,14 +116,16 @@ class _Add_CircleState extends State<Add_Circle> {
               padding: const EdgeInsets.all(20),
               child: ElevatedButton(
                 onPressed: () {
-                  if (point == null) return;
+                  c=Circles(radius: radius, point: point);
+                  // if (point == null) return;
                   Navigator.pop(
                     context,
-                    Circles(radius: radius, point: point)
+                    c
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
+                  minimumSize: const Size(double.infinity, 50),
                 ),
                 child: const Text("Save Circle"),
               ),
@@ -137,7 +137,7 @@ class _Add_CircleState extends State<Add_Circle> {
   }
 }
 class Circles{
-  double radius;
+  double? radius;
   LatLng? point;
   Circles({required this.radius,required this.point});
 }

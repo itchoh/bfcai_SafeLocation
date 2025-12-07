@@ -1,10 +1,8 @@
-import 'package:bfcai_safe_zone/Features/Map_Location/utils/check.dart';
 import 'package:bfcai_safe_zone/Features/Map_Location/utils/checkCircleFun.dart';
 import 'package:bfcai_safe_zone/Features/Map_Location/utils/checkPolyFun.dart';
 import 'package:bfcai_safe_zone/Features/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../Notification/Local_Notification.dart';
 import '../../core/utils/app_shared_preference.dart';
 import 'Add Circle.dart';
@@ -136,10 +134,11 @@ class _ShowMapState extends State<ShowMap> {
                   },
                   circles:  {
                     for (int i = 0; i < userCircles.length; i++)
-                      Circle(
+                      if (userCircles[i].point != null)
+                       Circle(
                         circleId: CircleId("user_Circle_$i"),
                         center: userCircles[i].point!,
-                        radius: userCircles[i].radius,
+                        radius: userCircles[i].radius!,
                         fillColor: Colors.greenAccent.withOpacity(0.4),
                         strokeWidth: 1,
                         strokeColor: Colors.blue,

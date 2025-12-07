@@ -10,7 +10,7 @@ bool isInsideAnyCircle(LatLng userPos, List<Circles> circles) {
       turf.Point(coordinates: turf.Position(circle.point!.longitude, circle.point!.latitude)),
     );
 
-    if (dist * 1000 <= circle.radius) {
+    if (dist * 1000 <= circle.radius!) {
       return true;
     }
   }
