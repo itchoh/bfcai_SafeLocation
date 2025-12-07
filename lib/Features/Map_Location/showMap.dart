@@ -22,7 +22,7 @@ class ShowMap extends StatefulWidget {
 
 class _ShowMapState extends State<ShowMap> {
   List<List<LatLng>> userPolygons = [];
-  List<Circle> userCircles = [];
+  List<Circles> userCircles = [];
   bool check1 = true;
   bool check2 = true;
   @override
@@ -68,10 +68,13 @@ class _ShowMapState extends State<ShowMap> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Google Map Live Tracking"),
-        leading: IconButton(onPressed: () {
-          AppPreference.removeData("id");
-          Navigator.of(context).pushNamed(LoginScreen.routeName);
-        }, icon: Icon(Icons.logout)),
+        leading: IconButton(
+          onPressed: () {
+            AppPreference.removeData("id");
+            Navigator.of(context).pushNamed(LoginScreen.routeName);
+          },
+          icon: Icon(Icons.logout),
+        ),
       ),
       body: MapService.position == null
           ? Center(child: CircularProgressIndicator())
@@ -100,6 +103,7 @@ class _ShowMapState extends State<ShowMap> {
                       infoWindow: const InfoWindow(title: "You are here"),
                     ),
                   },
+
                   polygons: {
                     for (int i = 0; i < userPolygons.length; i++)
                       Polygon(
@@ -108,63 +112,124 @@ class _ShowMapState extends State<ShowMap> {
                         fillColor: Colors.blueAccent.withOpacity(0.4),
                         strokeWidth: 1,
                         strokeColor: Colors.blue,
+                          consumeTapEvents: true,
+                          onTap: () async{
+                          userPolygons.remove(userPolygons[i]);
+                          setState(() {
+                          });
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AddPolygon(
+                                  position: MapService.position,
+                                  mapController: MapService.mapController,
+                                ),
+                              ),
+                            );
+                            if (result != null && mounted) {
+                              setState(() {
+                                userPolygons.add(List<LatLng>.from(result));
+                              });
+                            }
+                        },
                       ),
                   },
-                  circles: {...userCircles},
+                  circles:  {
+                    for (int i = 0; i < userCircles.length; i++)
+                      Circle(
+                        circleId: CircleId("user_Circle_$i"),
+                        center: userCircles[i].point!,
+                        radius: userCircles[i].radius,
+                        fillColor: Colors.greenAccent.withOpacity(0.4),
+                        strokeWidth: 1,
+                        strokeColor: Colors.blue,
+                        consumeTapEvents: true,
+                        onTap: () async {
+                          userCircles.remove(userCircles[i]);
+                          setState(() {
+                          });
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => Add_Circle(
+                                position: MapService.position,
+                                mapController: MapService.mapController,
+                              ),
+                            ),
+                          );
+                          if (result != null) {
+                            setState(() {
+                              userCircles.add(result);
+                            });
+                          }
+                        },
+                      ),
+                  },
                 ),
-                buildAlign(
-                  context,
-                  Alignment.bottomLeft,
-                  AddPolygon(
-                    position: MapService.position,
-                    mapController: MapService.mapController,
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                      ),
+                      onPressed: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AddPolygon(
+                              position: MapService.position,
+                              mapController: MapService.mapController,
+                            ),
+                          ),
+                        );
+                        if (result != null && mounted) {
+                          setState(() {
+                            userPolygons.add(List<LatLng>.from(result));
+                          });
+                        }
+                      },
+                      child: const Text(
+                        "Polygon",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ),
-                  userPolygons,
                 ),
-                buildAlign(
-                  context,
-                  Alignment.bottomRight,
-                  Add_Circle(
-                    position: MapService.position,
-                    mapController: MapService.mapController,
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                      ),
+                      onPressed: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => Add_Circle(
+                              position: MapService.position,
+                              mapController: MapService.mapController,
+                            ),
+                          ),
+                        );
+                        if (result != null) {
+                          setState(() {
+                            userCircles.add(result);
+                          });
+                        }
+                      },
+                      child: const Text(
+                        "Circle",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ),
-                  userCircles,
                 ),
               ],
             ),
-    );
-  }
-
-  Align buildAlign(
-    BuildContext context,
-    Alignment Alignn,
-    Widget w,
-    List listt,
-  ) {
-    return Align(
-      alignment: Alignn,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-          onPressed: () async {
-            final result = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) {
-                  return w;
-                },
-              ),
-            );
-            if (result != null && mounted) {
-              setState(() {
-                listt.add(List<LatLng>.from(result));
-              });
-            }
-          },
-          child: const Text("Polygon", style: TextStyle(color: Colors.white)),
-        ),
-      ),
     );
   }
 }
